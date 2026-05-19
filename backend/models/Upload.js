@@ -15,6 +15,10 @@ const uploadSchema = new mongoose.Schema(
             type: String,
         },
 
+        imageUrls: {
+            type: [String],
+        },
+
         totalNumbers: {
             type: Number,
             default: 0,
@@ -28,15 +32,19 @@ const uploadSchema = new mongoose.Schema(
             {
                 name: String,
                 phone: String,
+                country: String,
+                valid: Boolean,
             },
         ],
+
+        uploadedAt: {
+            type: Date,
+            default: Date.now,
+        },
     },
     {
         timestamps: true,
     }
 );
 
-module.exports = mongoose.model(
-    "Upload",
-    uploadSchema
-);
+module.exports = mongoose.model("Upload", uploadSchema);

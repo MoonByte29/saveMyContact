@@ -29,15 +29,11 @@ function Login() {
 
             console.log(response.data);
 
-            // SAVE TOKEN
             localStorage.setItem("token", response.data.token);
-
-            // SAVE USER
             localStorage.setItem("user", JSON.stringify(response.data.user));
 
             alert("Login Successful");
 
-            // REDIRECT
             navigate("/dashboard");
         } catch (error) {
             console.log(error);
@@ -48,27 +44,25 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4">
-            {/* Background glow */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-3xl" />
-            </div>
+        <div className="min-h-screen bg-slate-50 font-sans flex items-center justify-center px-4">
 
-            <div className="relative w-full max-w-sm">
+            <div className="w-full max-w-sm">
+
                 {/* Card */}
-                <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl shadow-black/60">
+                <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
 
                     {/* Header */}
                     <div className="mb-8">
-                        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center mb-5">
+                        <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center mb-5">
                             <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
                             </svg>
                         </div>
-                        <h1 className="text-xl font-semibold text-white tracking-tight">
+                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">ContactScan</p>
+                        <h1 className="text-xl font-bold text-slate-800 tracking-tight">
                             Welcome back
                         </h1>
-                        <p className="text-sm text-zinc-500 mt-1">
+                        <p className="text-sm text-slate-500 mt-1">
                             Sign in to your account
                         </p>
                     </div>
@@ -78,7 +72,7 @@ function Login() {
                         <div className="space-y-1.5">
                             <label
                                 htmlFor="username"
-                                className="block text-xs font-medium text-zinc-400 uppercase tracking-widest"
+                                className="block text-xs font-semibold text-slate-500 uppercase tracking-widest"
                             >
                                 Username
                             </label>
@@ -90,14 +84,14 @@ function Login() {
                                 value={formData.username}
                                 onChange={handleChange}
                                 required
-                                className="w-full bg-zinc-800/60 border border-zinc-700 text-white placeholder-zinc-600 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all duration-200"
+                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all"
                             />
                         </div>
 
                         <div className="space-y-1.5">
                             <label
                                 htmlFor="password"
-                                className="block text-xs font-medium text-zinc-400 uppercase tracking-widest"
+                                className="block text-xs font-semibold text-slate-500 uppercase tracking-widest"
                             >
                                 Password
                             </label>
@@ -109,14 +103,14 @@ function Login() {
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                className="w-full bg-zinc-800/60 border border-zinc-700 text-white placeholder-zinc-600 rounded-lg px-3.5 py-2.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/50 transition-all duration-200"
+                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all"
                             />
                         </div>
 
                         <div className="flex justify-end">
                             <a
                                 href="#"
-                                className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                                className="text-xs text-teal-600 hover:text-teal-500 transition-colors"
                             >
                                 Forgot password?
                             </a>
@@ -125,7 +119,7 @@ function Login() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-indigo-600/50 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg py-2.5 transition-all duration-200 flex items-center justify-center gap-2 mt-2"
+                            className="w-full bg-teal-500 hover:bg-teal-400 disabled:bg-teal-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg py-2.5 transition-all duration-200 flex items-center justify-center gap-2 mt-2"
                         >
                             {isLoading ? (
                                 <>
@@ -142,9 +136,9 @@ function Login() {
                     </form>
 
                     {/* Footer */}
-                    <p className="text-center text-xs text-zinc-600 mt-6">
+                    <p className="text-center text-xs text-slate-400 mt-6">
                         Don't have an account?{" "}
-                        <a href="/register" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+                        <a href="/register" className="text-teal-600 hover:text-teal-500 font-semibold transition-colors">
                             Create one
                         </a>
                     </p>

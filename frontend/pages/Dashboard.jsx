@@ -41,7 +41,7 @@ function Dashboard() {
             }
         } catch (error) {
             console.log(error);
-            alert("Upload Failed");
+            alert(error.response?.data?.message || error.message || "Upload Failed");
         } finally {
             setIsLoading(false);
         }
@@ -64,7 +64,7 @@ function Dashboard() {
         <div className="min-h-screen bg-slate-50 font-sans">
 
             {/* Topbar */}
-            <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
+            {/* <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -73,8 +73,20 @@ function Dashboard() {
                     </div>
                     <span className="text-slate-800 font-semibold text-sm tracking-tight">ContactScan</span>
                 </div>
-                <span className="text-xs text-slate-400 font-medium uppercase tracking-widest">Dashboard</span>
-            </header>
+                <div className="flex items-center gap-4">
+
+                    <button
+                        onClick={() => window.location.href = "/admin"}
+                        className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all"
+                    >
+                        Admin Panel
+                    </button>
+
+                    <span className="text-xs text-slate-400 font-medium uppercase tracking-widest">
+                        Dashboard
+                    </span>
+
+                </div>            </header> */}
 
             <main className="max-w-3xl mx-auto px-6 py-12 space-y-8">
 

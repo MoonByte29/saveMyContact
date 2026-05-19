@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
 import API from "../services/api";
 
 function Register() {
-
     const navigate = useNavigate();
 
-    const [formData, setFormData] =
-        useState({
-            username: "",
-            password: "",
-            role: "user",
-        });
+    const [formData, setFormData] = useState({
+        username: "",
+        password: "",
+        role: "user",
+    });
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -25,86 +22,128 @@ function Register() {
     };
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
         setError("");
         setLoading(true);
 
         try {
-
             await API.post("/auth/register", formData);
-
             alert("Registered successfully! Please login.");
             navigate("/");
-
         } catch (err) {
-
-            const msg =
-                err.response?.data?.message || "Registration failed";
+            const msg = err.response?.data?.message || "Registration failed";
             setError(msg);
-
         } finally {
             setLoading(false);
         }
     };
 
     return (
+        <div className="min-h-screen bg-slate-50 font-sans flex items-center justify-center px-4">
 
-        <div style={{ padding: "50px" }}>
+            <div className="w-full max-w-sm">
 
-            <h1>Register</h1>
+                {/* Card */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
 
-            {error && (
-                <p style={{ color: "red" }}>{error}</p>
-            )}
+                    {/* Header */}
+                    <div className="mb-8">
+                        <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center mb-5">
+                            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Zm6-10.125a1.875 1.875 0 1 1-3.75 0 1.875 1.875 0 0 1 3.75 0Zm1.294 6.336a6.721 6.721 0 0 1-3.17.789 6.721 6.721 0 0 1-3.168-.789 3.376 3.376 0 0 1 6.338 0Z" />
+                            </svg>
+                        </div>
+                        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-1">ContactScan</p>
+                        <h1 className="text-xl font-bold text-slate-800 tracking-tight">Create an account</h1>
+                        <p className="text-sm text-slate-500 mt-1">Fill in the details below to get started.</p>
+                    </div>
 
-            <form onSubmit={handleSubmit}>
+                    {/* Error */}
+                    {error && (
+                        <div className="mb-4 bg-red-50 border border-red-200 text-red-600 text-xs font-medium rounded-lg px-4 py-3">
+                            {error}
+                        </div>
+                    )}
 
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    value={formData.username}
-                    onChange={handleChange}
-                    required
-                />
+                    {/* Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
 
-                <br /><br />
+                        <div className="space-y-1.5">
+                            <label htmlFor="username" className="block text-xs font-semibold text-slate-500 uppercase tracking-widest">
+                                Username
+                            </label>
+                            <input
+                                id="username"
+                                type="text"
+                                name="username"
+                                placeholder="Enter your username"
+                                value={formData.username}
+                                onChange={handleChange}
+                                required
+                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all"
+                            />
+                        </div>
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                        <div className="space-y-1.5">
+                            <label htmlFor="password" className="block text-xs font-semibold text-slate-500 uppercase tracking-widest">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                type="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all"
+                            />
+                        </div>
 
-                <br /><br />
+                        <div className="space-y-1.5">
+                            <label htmlFor="role" className="block text-xs font-semibold text-slate-500 uppercase tracking-widest">
+                                Role
+                            </label>
+                            <select
+                                id="role"
+                                name="role"
+                                value={formData.role}
+                                onChange={handleChange}
+                                className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-100 transition-all"
+                            >
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
 
-                <select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                >
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-teal-500 hover:bg-teal-400 disabled:bg-teal-300 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-lg py-2.5 transition-all duration-200 flex items-center justify-center gap-2 mt-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                    </svg>
+                                    Registering...
+                                </>
+                            ) : (
+                                "Create account"
+                            )}
+                        </button>
+                    </form>
 
-                <br /><br />
-
-                <button type="submit" disabled={loading}>
-                    {loading ? "Registering..." : "Register"}
-                </button>
-
-            </form>
-
-            <br />
-            <p>
-                Already have an account?{" "}
-                <Link to="/">Login</Link>
-            </p>
-
+                    {/* Footer */}
+                    <p className="text-center text-xs text-slate-400 mt-6">
+                        Already have an account?{" "}
+                        <Link to="/" className="text-teal-600 hover:text-teal-500 font-semibold transition-colors">
+                            Sign in
+                        </Link>
+                    </p>
+                </div>
+            </div>
         </div>
     );
 }

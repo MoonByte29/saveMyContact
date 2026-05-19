@@ -1,12 +1,8 @@
-const createCsvWriter =
-    require("csv-writer").createObjectCsvWriter;
-
+const { Parser } = require("json2csv");
+const fs = require("fs");
 const path = require("path");
 
-const generateCSV = async (
-    contacts,
-    filename
-) => {
+const generateCSV = async (contacts, filename) => {
 
     const csvPath = path.join(
         __dirname,
@@ -14,19 +10,23 @@ const generateCSV = async (
         `${filename}.csv`
     );
 
-    const csvWriter = createCsvWriter({
+    // Ensure csv directory exists
+    const csvDir = path.dirname(csvPath);
+    if (!fs.existsSync(csvDir)) {
+        fs.mkdirSync(csvDir, { recursive: true });
+    }
 
-        path: csvPath,
+    const fields = [
+        { label: "Name", value: "name" },
+        { label: "Phone", value: "phone" },
+        { label: "Country", value: "country" },
+        { label: "Valid", value: "valid" },
+    ];
 
-        header: [
-            { id: "name", title: "Name" },
-            { id: "phone", title: "Phone" },
-        ],
-    });
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(contacts);
 
-    await csvWriter.writeRecords(
-        contacts
-    );
+    fs.writeFileSync(csvPath, csv);
 
     return csvPath;
 };

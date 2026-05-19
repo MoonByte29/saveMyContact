@@ -22,6 +22,8 @@ const {
 
     getAllUploads,
 
+    deleteAllUploads,
+
 } = require(
     "../controllers/adminController"
 );
@@ -69,6 +71,14 @@ router.get(
     protect,
     admin,
     getAllUploads
+);
+
+// DELETE ALL UPLOADS
+router.delete(
+    "/uploads",
+    protect,
+    admin,
+    deleteAllUploads
 );
 
 module.exports = router;

@@ -1,10 +1,8 @@
 const User = require("../models/User");
-
-const Upload =
-    require("../models/Upload");
-
-const bcrypt =
-    require("bcryptjs");
+const Upload = require("../models/Upload");
+const bcrypt = require("bcryptjs");
+const fs = require("fs");
+const cloudinary = require("cloudinary").v2;
 
 
 // CREATE USER
@@ -92,27 +90,35 @@ exports.getUsers = async (
 
 
 // DELETE USER
-exports.deleteUser = async (
-    req,
-    res
-) => {
-
+exports.deleteUser = async (req, res) => {
     try {
+        const userId = req.params.id;
 
-        await User.findByIdAndDelete(
-            req.params.id
-        );
+        // Clean up uploads
+        const uploads = await Upload.find({ userId });
+        for (const upload of uploads) {
+            if (upload.csvPath && fs.existsSync(upload.csvPath)) {
+                fs.unlinkSync(upload.csvPath);
+            }
+            if (upload.imageUrls && upload.imageUrls.length > 0) {
+                for (const url of upload.imageUrls) {
+                    try {
+                        const parts = url.split("/");
+                        const filename = parts.pop();
+                        const folder = parts.pop();
+                        const public_id = `${folder}/${filename.split('.')[0]}`;
+                        await cloudinary.uploader.destroy(public_id);
+                    } catch (err) {}
+                }
+            }
+        }
+        await Upload.deleteMany({ userId });
 
-        res.status(200).json({
-            message:
-                "User deleted successfully",
-        });
+        await User.findByIdAndDelete(userId);
 
+        res.status(200).json({ message: "User and associated data deleted successfully" });
     } catch (error) {
-
-        res.status(500).json({
-            message: error.message,
-        });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -188,5 +194,46 @@ exports.getAllUploads = async (
         res.status(500).json({
             message: error.message,
         });
+    }
+};
+// In your GET /admin/uploads endpoint
+exports.getUploads = async (req, res) => {
+    const { userId } = req.query;
+
+    const query = userId ? { userId } : {};
+    const uploads = await Upload.find(query).populate('userId', 'username');
+
+    res.json({
+        uploads,
+        user: userId ? await User.findById(userId) : null
+    });
+};
+
+// DELETE ALL UPLOADS
+exports.deleteAllUploads = async (req, res) => {
+    try {
+        const uploads = await Upload.find();
+        
+        for (const upload of uploads) {
+            if (upload.csvPath && fs.existsSync(upload.csvPath)) {
+                fs.unlinkSync(upload.csvPath);
+            }
+            if (upload.imageUrls && upload.imageUrls.length > 0) {
+                for (const url of upload.imageUrls) {
+                    try {
+                        const parts = url.split("/");
+                        const filename = parts.pop();
+                        const folder = parts.pop();
+                        const public_id = `${folder}/${filename.split('.')[0]}`;
+                        await cloudinary.uploader.destroy(public_id);
+                    } catch (err) {}
+                }
+            }
+        }
+
+        await Upload.deleteMany({});
+        res.status(200).json({ message: "All uploads and files deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 };
