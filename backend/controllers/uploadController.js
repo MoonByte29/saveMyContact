@@ -35,9 +35,14 @@ exports.uploadImages = async (req, res) => {
         let contacts = [];
 
         // Search for existing contacts with this prefix to continue numbering
-        const previousUploads = await Upload.find({ userId: req.user.id });
+        const previousUploads = await Upload.find(
+            { userId: req.user.id },
+            { "contacts.name": 1, _id: 0 }
+        ).lean();
+
         let maxNumber = -1;
         previousUploads.forEach((u) => {
+            if (!u.contacts) return;
             u.contacts.forEach((c) => {
                 if (c.name === prefix) {
                     if (maxNumber < 0) maxNumber = 0;
@@ -186,7 +191,9 @@ exports.uploadImages = async (req, res) => {
 exports.getUploads = async (req, res) => {
     try {
         const uploads = await Upload.find({ userId: req.user.id })
-            .sort({ createdAt: -1 });
+            .select("-contacts")
+            .sort({ createdAt: -1 })
+            .lean();
 
         return res.status(200).json({
             success: true,
@@ -301,8 +308,10 @@ exports.getUploadsByUser = async (req, res) => {
         }
 
         const uploads = await Upload.find({ userId })
+            .select("-contacts")
             .sort({ createdAt: -1 })
-            .populate("userId", "username email");
+            .populate("userId", "username email")
+            .lean();
 
         const user = await User.findById(userId).select("username email");
 
@@ -321,7 +330,7 @@ exports.deleteUploadsByUser = async (req, res) => {
     try {
         const { userId } = req.params;
 
-        const uploads = await Upload.find({ userId });
+        const uploads = await Upload.find({ userId }).select("csvPath imageUrls").lean();
         
         for (const upload of uploads) {
             if (upload.csvPath && fs.existsSync(upload.csvPath)) {

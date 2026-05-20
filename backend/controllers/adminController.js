@@ -95,7 +95,7 @@ exports.deleteUser = async (req, res) => {
         const userId = req.params.id;
 
         // Clean up uploads
-        const uploads = await Upload.find({ userId });
+        const uploads = await Upload.find({ userId }).select("csvPath imageUrls").lean();
         for (const upload of uploads) {
             if (upload.csvPath && fs.existsSync(upload.csvPath)) {
                 fs.unlinkSync(upload.csvPath);
@@ -177,13 +177,15 @@ exports.getAllUploads = async (
 
         const uploads =
             await Upload.find()
+                .select("-contacts")
                 .populate(
                     "userId",
                     "username"
                 )
                 .sort({
                     createdAt: -1,
-                });
+                })
+                .lean();
 
         res.status(200).json(
             uploads
@@ -201,7 +203,7 @@ exports.getUploads = async (req, res) => {
     const { userId } = req.query;
 
     const query = userId ? { userId } : {};
-    const uploads = await Upload.find(query).populate('userId', 'username');
+    const uploads = await Upload.find(query).select("-contacts").populate('userId', 'username').lean();
 
     res.json({
         uploads,
@@ -212,7 +214,7 @@ exports.getUploads = async (req, res) => {
 // DELETE ALL UPLOADS
 exports.deleteAllUploads = async (req, res) => {
     try {
-        const uploads = await Upload.find();
+        const uploads = await Upload.find().select("csvPath imageUrls").lean();
         
         for (const upload of uploads) {
             if (upload.csvPath && fs.existsSync(upload.csvPath)) {
